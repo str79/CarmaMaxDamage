@@ -19,7 +19,9 @@ var langStr={
 	GROUPS_ALLOFF:'Disable all',
 	GROUPS_COMMON:'Common group',
 	GROUPS_HISTORY:'History',
-	CONTMENU:'Item menu',
+	GROUPCMENU:'Group menu',
+	GROUPCMENU_MOVE:'Move',
+	GROUPCMENU_REMOVE:'Remove',
 	CONTMENU_CHGROUP:'Change group',
 	CONTMENU_DELPOINT:'Remove Item',	
 	LANG:'<img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Flag_of_the_United_Kingdom_%281-2%29.svg" style="display: inline;height: 1em;">Lang',
@@ -67,8 +69,14 @@ var langStr={
 	the latest changes will be saved. 2. After the operation, copy and save the result in settings.js).<br> \
 	<br>\
 	Shift + click on the group - selects the points of the group<br> \
-	Сtrl + click on the group - allows you to rename the group<br> \
-	Alt + click on the group - allows you to remove the group<br> \
+	alt + click on the group - allows you to rename the group<br> \
+	ctrl + click on the group - menu appears<br> \
+	where you can:<br> \
+	move group (also affects groups when collecting markers of the current map)<br> \
+	delete group<br> \
+	when moving, destination group selection is activated<br> \
+	click - confirm and move<br> \
+	ctrl + click - cancel<br> \
 	just click on the group - opens/closes it<br> \
 	<br>---Maps/profiles\:<br> \
 	Shift + click on the map - allows you to rename it.<br> \

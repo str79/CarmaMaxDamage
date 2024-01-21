@@ -9,17 +9,17 @@ var Profiles=[
 		'offsetTop':'-55px',
 		'GpoupList':['Вонючки','Пешеходы на карте','Кенгуру'],
 	},
-{
-'Name':'land2',
-'File':'land2.jpg',
-'pointarr':'land2Pt',
-'zoom':1,
-'StartIndex':1,
-'offsetLeft':'-21px',
-'offsetTop':'-55px',
-'GpoupList':['Stinkers','Pedestrians on the map'],
-},
-{
+	{
+		'Name':'land2',
+		'File':'land2.jpg',
+		'pointarr':'land2Pt',
+		'zoom':1,
+		'StartIndex':1,
+		'offsetLeft':'-21px',
+		'offsetTop':'-55px',
+		'GpoupList':['Вонючки','Пешеходы на карте'],
+	},
+	{
 		'Name':'land1',
 		'File':'land1.jpg',
 		'pointarr':'land1Pt',

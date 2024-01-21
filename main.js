@@ -18,6 +18,7 @@ $(document).ready(function() {
 	var mapcircle=0; //признак что курсор находится на точке-круге, метке на карте.
 	var maptarget=null;
 	var movehist=0; //режим перемещения элементов истории
+	var moveGroup=0; //режим перемещения групп
 	var mapposx=null,mapposy=null; //старые координаты точки mouse event
 	var mapposcx=null,mapposcy=null; //старые координаты точки
 	var circlept=0;  //признак что включен информационный прямоугольник
@@ -122,7 +123,7 @@ $(document).ready(function() {
 		//wait
 		return new Promise((resolve, reject) => {
 			mapSettings.onload = function() {
-				resolve("ок");
+				resolve("maps/profiles loaded");
 				if (typeof(Profiles)=='undefined'){
 					//хотя-бы пустой массив
 					Profiles=[];
@@ -543,7 +544,7 @@ $(document).ready(function() {
 		var curtext='',alton=0;
 		newGlobhist=[]; //временный массив истории для сортировки
 		if (event.altKey){
-			//Решим частичного вывода
+			//сортируем массив ключей профиля в историческом порядке
 			alton=1;
 		}
 		//массив соответствий группы и ид
@@ -1125,6 +1126,45 @@ $(document).ready(function() {
 			});
 		}
 	});
+	$('#tmpContGroupMenu .list-group-item .groupmove').on('click',function(e){
+		//перемещаем группу
+		//само меню
+		var tmpCont=$(this).closest('#tmpContGroupMenu');
+		//Найдем группу, индекс
+		var groupIndex=tmpCont.data('itemIndex');
+		//Где расположена сама группа
+		var par=$('.maingroups .list-group-item').not('.autohist').eq(groupIndex);
+		//Включаем особый режим чтобы при наведении выделялось
+		moveGroup=1;
+		tmpCont.addClass('hide');
+	})
+	$('#tmpContGroupMenu .list-group-item .groupremove').on('click',function(e){
+		//Удалим группу
+		var tmpCont=$(this).closest('#tmpContGroupMenu');
+		//Найдем группу
+		var groupIndex=tmpCont.data('itemIndex');
+		var par=$('.maingroups .list-group-item').not('.autohist').eq(groupIndex);
+		if (groupIndex>=0){
+			if (confirm('Удалить / delete ?')) {
+				//удаляем в памяти
+				if (Array.isArray(Profiles[profileIndex].GpoupList)){
+					Profiles[profileIndex].GpoupList.splice(groupIndex, 1);
+				}
+				else{
+					console.log('error delete');
+				}
+				
+				//удаляем в списке
+				if (par.length){
+					par.remove();
+				}
+			}
+		}
+		event.preventDefault();
+		//close menu
+		tmpCont.addClass('hide');
+		//return;
+	});
 	$('#tmpContMenu .list-group-item .delpoint').on('click',function(e){
 		//удаляем точку на карте
 		//старый номер группы
@@ -1541,10 +1581,11 @@ $(document).ready(function() {
 		}
 		return false;
 	});
-	$('.maingroups').on('click','.list-group-item-heading .text',function(){
+	$('.maingroups').on('click','.list-group-item .list-group-item-heading .text',function(){
 		var el=$(this);
 		var newselarr=[];
-		var par=el.parent().parent(); //.list-group-item
+		//var par=el.parent().parent(); //.list-group-item
+		var par=el.closest('.list-group-item');
 		if (event.shiftKey){
 			//Выделяем точки группы
 			par.find('.list-group-item-text').each(function(){
@@ -1556,6 +1597,31 @@ $(document).ready(function() {
 			return;
 		}
 		if (event.ctrlKey){
+			//будем выводить меню с выбором
+			if (moveGroup){
+				//отмена перемещения
+				moveGroup=0;
+				return;
+			}
+			else if (!par.hasClass('autohist')){
+				let el=$('#tmpContGroupMenu');
+				let elh=el.outerHeight();
+				let menuheight=0;
+				el.toggleClass('hide');
+				el.css('left',event.pageX+'px');
+				menuheight=event.pageY;
+				//далее передвигаем с учетом экрана, если позволяет - справа от курсора, если нет - справа будет низ меню
+				if (event.pageY+elh>$('body').height()){
+					menuheight-=elh;
+				}
+				el.css('top',menuheight+'px');			
+				//Найдем группу
+				let sibs=par.parent().find('.list-group-item').not('.autohist');
+				let groupIndex=sibs.index(par);
+				el.data('itemIndex',groupIndex);
+				return;
+			}
+		}else if (event.altKey){
 			//Переименовываем группу
 			//Найдем группу
 			var sibs=par.parent().find('.list-group-item').not('.autohist');
@@ -1581,39 +1647,85 @@ $(document).ready(function() {
 			event.preventDefault();
 			return;
 		}
-		if (event.altKey){
-			//Удалим группу
-			//Найдем группу
-			var sibs=par.parent().find('.list-group-item').not('.autohist');
-			var groupIndex=sibs.index(par);
-			if (groupIndex>=0){
-				if (confirm('Удалить / delete ?')) {
-
-					//удаляем в памяти
-					if (Array.isArray(Profiles[profileIndex].GpoupList)){
-						//delete Profiles[profileIndex].GpoupList[groupIndex];
-						Profiles[profileIndex].GpoupList.splice(groupIndex, 1);
-					}
-					else{
-						console.log('error delete');
-					}
-					
-					//удаляем в списке
-					par.remove();
+		if (moveGroup){
+			par.removeClass('moveGroup');
+			moveGroup=0;
+			//Само перемещение
+			//определить откуда
+			let sibs=par.parent().find('.list-group-item').not('.autohist');
+			let groupIndex=sibs.index(par);
+			//определяем куда
+			let GrFrom=$('#tmpContGroupMenu').data('itemIndex');
+			let GrVal=Profiles[profileIndex].GpoupList[GrFrom];
+			//лучше сначала вставлять, потом после вставленного дописать к следующим индексам 1, затем удалить
+			//в памяти
+			if (groupIndex<GrFrom){
+				//уменьшение индекса - перемещаюсь выше
+				Profiles[profileIndex].GpoupList.splice(groupIndex+1,0,GrVal);
+				Profiles[profileIndex].GpoupList.splice(GrFrom+1,1);
+			}else if (groupIndex>GrFrom){
+				//новый индекс больше старого - перемещаюсь ниже
+				Profiles[profileIndex].GpoupList.splice(groupIndex+1,0,GrVal);
+				Profiles[profileIndex].GpoupList.splice(GrFrom,1);
+			}else{
+				//равно - вообще не перемещаюсь
+			}
+			//визуально
+			//add
+			/*let GrFromVis=GrFrom;
+			if (groupIndex<GrFrom){
+				GrFromVis+=1;
+			}*/
+			//лучше так не делать и копировать полностью
+			//par.after(wrapMainGroups(GrVal));
+			par.after(sibs.eq(GrFrom));
+			//remove уже не нужно
+			//sibs.eq(GrFromVis).remove();
+			
+			//перемещение групп точек в памяти
+			
+			//составим хеш массивы
+			let startI=groupIndex;
+			let endI=GrFrom;
+			let myinc=1;
+			//сначала середина
+			if (groupIndex>GrFrom){
+				//вниз
+				startI=GrFrom;
+				endI=groupIndex;
+				myinc=-1;
+			}
+			let arrRename={};
+			for (let z=startI+1;z<=endI;z++){
+				arrRename[z]=z+myinc;
+			}
+			//конечные
+			arrRename[GrFrom]=groupIndex;
+			
+			//цикл перемещения, в памяти менять бессмысленно, т.к. вся инфа собирает по точкам карты,
+			//но суть в том что инфа по точкам и их группам собирается из групп слева, хотя и стоит того если мы захотим скакать с карты на карту
+			for (tmppoint in self[Profiles[profileIndex].pointarr]) {
+				//обычно одна группа
+				let curG=JSON.parse(self[Profiles[profileIndex].pointarr][tmppoint].Groups)[0];
+				if (arrRename.hasOwnProperty(curG)){
+					//нашли совпадение по группе
+					//self[Profiles[profileIndex].pointarr
+					self[Profiles[profileIndex].pointarr][tmppoint].Groups=JSON.stringify([arrRename[curG]]);
 				}
 			}
-			event.preventDefault();
-			return;
-		}
-		if (el.hasClass('closed')){
-			el.removeClass('closed');
-			//open
-			par.find('.list-group-item-text').removeClass('hide');
+
 		}
 		else{
-			el.addClass('closed');
-			//close
-			par.find('.list-group-item-text').addClass('hide');
+			if (el.hasClass('closed')){
+				el.removeClass('closed');
+				//open
+				par.find('.list-group-item-text').removeClass('hide');
+			}
+			else{
+				el.addClass('closed');
+				//close
+				par.find('.list-group-item-text').addClass('hide');
+			}
 		}
 	});
 	$('#flylist').on('click','.list-group-item-text .icon',function(){
@@ -1739,22 +1851,36 @@ $(document).ready(function() {
 	});
 	$('#flylist').on({
 		mouseenter: function () {
+			if (moveGroup){
+				var el=$(this);
+				el.addClass('moveGroup')
+			}
+		},
+		mouseleave: function () {
+			if (moveGroup){
+				var el=$(this);
+				el.removeClass('moveGroup')
+			}
+		}
+	}, ".list-group-item:not(autohist)");
+	
+	$('#flylist').on({
+		mouseenter: function () {
 			var el=$(this);
-			var ishist=el.parent().hasClass('autohist');
 			$('#'+el.data('id')).addClass('highlight');
-			if (ishist && movehist){
+			if (movehist){
 				el.addClass('hMove')
 			}
 		},
 		mouseleave: function () {
 			var el=$(this);
-			var ishist=el.parent().hasClass('autohist');
 			$('#'+el.data('id')).removeClass('highlight');
-			if (ishist && movehist){
+			if (movehist){
 				el.removeClass('hMove')
 			}
 		}
-	}, ".list-group-item-text"); 
+	}, ".list-group-item.autohist .list-group-item-text"); 
+	//list-group-item
 	$('#mainpic').on('mouseenter','.mycircle',function(){
 		lastId=this.id;
 	});
