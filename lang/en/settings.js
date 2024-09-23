@@ -1,7 +1,7 @@
 var Profiles=[
 	{
 		'Name':'town5 12 level.',
-		'File':'town5.jpg',
+		'File':'img/town5.jpg',
 		'pointarr':'town5Pt',
 		'zoom':1,
 		'StartIndex':1,
@@ -11,7 +11,7 @@ var Profiles=[
 	},
 	{
 		'Name':'land2',
-		'File':'land2.jpg',
+		'File':'img/land2.jpg',
 		'pointarr':'land2Pt',
 		'zoom':1,
 		'StartIndex':1,
@@ -21,7 +21,7 @@ var Profiles=[
 	},
 	{
 		'Name':'land1',
-		'File':'land1.jpg',
+		'File':'img/land1.jpg',
 		'pointarr':'land1Pt',
 		'zoom':1,
 		'StartIndex':1,
@@ -31,7 +31,7 @@ var Profiles=[
 	},
 	{
 		'Name':'town4',
-		'File':'town4.jpg',
+		'File':'img/town4.jpg',
 		'pointarr':'town4Pt',
 		'zoom':1,
 		'StartIndex':1,
@@ -41,7 +41,7 @@ var Profiles=[
 	},
 	{
 		'Name':'town3',
-		'File':'town3.jpg',
+		'File':'img/town3.jpg',
 		'pointarr':'town3Pt',
 		'zoom':1,
 		'StartIndex':1,
@@ -51,7 +51,7 @@ var Profiles=[
 	},
 	{
 		'Name':'isle',
-		'File':'town2.jpg',
+		'File':'img/town2.jpg',
 		'pointarr':'town2Pt',
 		'zoom':1,
 		'StartIndex':1,
@@ -61,7 +61,7 @@ var Profiles=[
 	},
 	{
 		'Name':'town1',
-		'File':'town1.jpg',
+		'File':'img/town1.jpg',
 		'pointarr':'town1Pt',
 		'zoom':1,
 		'StartIndex':1,
@@ -71,7 +71,7 @@ var Profiles=[
 	},
 	{
 		'Name':'Arena5',
-		'File':'arena5.jpg',
+		'File':'img/arena5.jpg',
 		'pointarr':'arena5Pt',
 		'zoom':1,
 		'StartIndex':1,
@@ -81,7 +81,7 @@ var Profiles=[
 	},
 	{
 		'Name':'Arena4 11 level.',
-		'File':'Arena4.jpg',
+		'File':'img/Arena4.jpg',
 		'pointarr':'Arena4Pt',
 		'zoom':1,
 		'StartIndex':1,
@@ -91,7 +91,7 @@ var Profiles=[
 	},
 	{
 		'Name':'Arena3 10level',
-		'File':'land2a.jpg',
+		'File':'img/land2a.jpg',
 		'pointarr':'land2aPt',
 		'zoom':1,
 		'StartIndex':1,
@@ -101,7 +101,7 @@ var Profiles=[
 	},
 	{
 		'Name':'Arena2 8level',
-		'File':'arena2.jpg',
+		'File':'img/arena2.jpg',
 		'pointarr':'arena2Pt',
 		'zoom':1,
 		'StartIndex':1,
@@ -111,7 +111,7 @@ var Profiles=[
 	},
 	{
 		'Name':'Arena 5level',
-		'File':'arena.jpg',
+		'File':'img/arena.jpg',
 		'pointarr':'arenaPt',
 		'zoom':1,
 		'StartIndex':1,
